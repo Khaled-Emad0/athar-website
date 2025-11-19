@@ -43,7 +43,17 @@
 
 <div id="devPanel" class="dev-panel">
   <h3>لوحة المطور</h3>
-  <p class="hint">يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.</p>
+  <p class="hint">
+    يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.
+  </p>
+
+  <button id="btnDownloadPage" class="dev-btn-sub" type="button">تحميل هذه الصفحة بعد التعديل</button>
+
+  <div style="margin-top:0.75rem;">
+    <strong>صور المعرض:</strong>
+    <button id="selectGalleryFolder" class="dev-btn-sub" type="button">اختر مجلد صور المعرض</button>
+    <input type="file" id="galleryFolderPicker" webkitdirectory directory multiple style="display:none;">
+  </div>
 
   <div id="volTools">
     <hr>

@@ -3,11 +3,62 @@ let devMode = false;
 const DEV_PASSWORD = "112233";
 const VOL_KEY = "ATHAR_VOLUNTEERS_V1";
 
+
+// تخزين الصور التي يتم اختيارها من المجلدات المحلية (لا تُرفع، فقط للاستخدام داخل الجلسة الحالية)
+let volunteerImages = [];
+let galleryImages = [];
+
 document.addEventListener("DOMContentLoaded", () => {
   const devToggle = document.getElementById("devToggle");
   const devPanel = document.getElementById("devPanel");
   const body = document.body;
   const pageId = body.dataset.page || "";
+
+  // زر تحميل الصفحة بعد التعديل
+  const downloadBtn = document.getElementById("btnDownloadPage");
+  if (downloadBtn) {
+    downloadBtn.addEventListener("click", () => {
+      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+      const blob = new Blob([html], { type: "text/html" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      const parts = window.location.pathname.split("/");
+      let filename = parts[parts.length - 1] || "index.html";
+      if (!filename.endsWith(".html")) filename = "page.html";
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(a.href);
+    });
+  }
+
+  // إعداد اختيار مجلد صور المتطوعين (إن وُجد في هذه الصفحة)
+  const volunteerPicker = document.getElementById("volunteerFolderPicker");
+  const volunteerBtn = document.getElementById("selectVolunteerFolder");
+  if (volunteerPicker && volunteerBtn) {
+    volunteerBtn.addEventListener("click", () => volunteerPicker.click());
+    volunteerPicker.addEventListener("change", (e) => {
+      volunteerImages = Array.from(e.target.files).filter((f) =>
+        f.type.startsWith("image")
+      );
+      alert("تم تحميل " + volunteerImages.length + " صورة متاحة للاختيار للمتطوعين.");
+    });
+  }
+
+  // إعداد اختيار مجلد صور المعرض (إن وُجد في هذه الصفحة)
+  const galleryPicker = document.getElementById("galleryFolderPicker");
+  const galleryBtn = document.getElementById("selectGalleryFolder");
+  if (galleryPicker && galleryBtn) {
+    galleryBtn.addEventListener("click", () => galleryPicker.click());
+    galleryPicker.addEventListener("change", (e) => {
+      galleryImages = Array.from(e.target.files).filter((f) =>
+        f.type.startsWith("image")
+      );
+      alert("تم تحميل " + galleryImages.length + " صورة للمعرض.");
+    });
+  }
+
 
   // Back to top
   const backBtn = document.getElementById("backToTop");
@@ -52,6 +103,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (lb && lbImg && closeLb) {
     document.querySelectorAll(".gallery-img").forEach((img) => {
       img.addEventListener("click", () => {
+        // في وضع المطور ومع توفر صور المعرض، نفتح نافذة اختيار صورة بدلاً من عرض اللايت بوكس
+        if (document.body.classList.contains("dev-mode") && galleryImages.length) {
+          chooseGalleryImage((fileName) => {
+            img.src = "assets/images/gallery/" + fileName;
+          });
+          return;
+        }
         lb.style.display = "block";
         lbImg.src = img.src;
       });
@@ -184,6 +242,16 @@ function renderVolunteers(root, data) {
     const v = com.volunteers.find((vv) => vv.id === volId);
     if (!v) return;
 
+    // إذا تم الضغط على صورة المتطوع مباشرة ولدينا مجلد صور، نفتح نافذة اختيار الصور
+    if (e.target.tagName === "IMG" && volunteerImages.length) {
+      chooseVolunteerImage((fileName) => {
+        v.photo = "assets/images/volunteers/" + fileName;
+        saveVolData(data);
+        renderVolunteers(root, data);
+      });
+      return;
+    }
+
     const newName = prompt("اسم المتطوع:", v.name);
     if (newName === null) return;
     const newRole = prompt("دور المتطوع:", v.role);
@@ -287,3 +355,65 @@ function buildVolTools(devPanel, data, root) {
     renderVolunteers(root, data);
   });
 }
+
+// نافذة اختيار صورة من مجلد المتطوعين
+function chooseVolunteerImage(callback) {
+  if (!volunteerImages.length) {
+    alert("لم يتم اختيار مجلد صور المتطوعين بعد.");
+    return;
+  }
+  const box = document.createElement("div");
+  box.style.cssText =
+    "position:fixed;inset:0;background:#0008;display:flex;justify-content:center;align-items:center;z-index:9999;";
+  const inner = document.createElement("div");
+  inner.style.cssText =
+    "background:#fff;padding:16px;border-radius:10px;max-height:80%;overflow:auto;display:flex;flex-wrap:wrap;gap:10px;";
+  volunteerImages.forEach((file) => {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.cssText =
+      "width:100px;height:100px;object-fit:cover;cursor:pointer;border-radius:6px;border:2px solid transparent;";
+    img.addEventListener("click", () => {
+      callback(file.name);
+      document.body.removeChild(box);
+    });
+    inner.appendChild(img);
+  });
+  box.addEventListener("click", (e) => {
+    if (e.target === box) document.body.removeChild(box);
+  });
+  box.appendChild(inner);
+  document.body.appendChild(box);
+}
+
+// نافذة اختيار صورة من مجلد المعرض
+function chooseGalleryImage(callback) {
+  if (!galleryImages.length) {
+    alert("لم يتم اختيار مجلد صور المعرض بعد.");
+    return;
+  }
+  const box = document.createElement("div");
+  box.style.cssText =
+    "position:fixed;inset:0;background:#0008;display:flex;justify-content:center;align-items:center;z-index:9999;";
+  const inner = document.createElement("div");
+  inner.style.cssText =
+    "background:#fff;padding:16px;border-radius:10px;max-height:80%;overflow:auto;display:flex;flex-wrap:wrap;gap:10px;";
+  galleryImages.forEach((file) => {
+    const img = document.createElement("img");
+    img.src = URL.createObjectURL(file);
+    img.style.cssText =
+      "width:100px;height:100px;object-fit:cover;cursor:pointer;border-radius:6px;border:2px solid transparent;";
+    img.addEventListener("click", () => {
+      callback(file.name);
+      document.body.removeChild(box);
+    });
+    inner.appendChild(img);
+  });
+  box.addEventListener("click", (e) => {
+    if (e.target === box) document.body.removeChild(box);
+  });
+  box.appendChild(inner);
+  document.body.appendChild(box);
+}
+
+
