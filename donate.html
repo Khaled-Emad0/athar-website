@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>التبرعات - جمعية أثر</title>
+<link rel="stylesheet" href="main.css"/>
+</head>
+<body data-page="donate">
+
+<header>
+  <img src="assets/images/logo.png" alt="شعار جمعية أثر">
+  <h1 class="editable">جمعية أثر لتنمية المجتمع</h1>
+  <p class="editable">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
+</header>
+
+<nav><div class="inner">
+<a href="index.html" class="">الرئيسية</a><a href="about.html" class="">من نحن</a><a href="projects.html" class="">مشاريعنا</a><a href="news.html" class="">أخبار الجمعية</a><a href="volunteers.html" class="">المتطوعون</a><a href="gallery.html" class="">معرض الصور</a><a href="donate.html" class="active">التبرعات</a><a href="team.html" class="">مجلس الإدارة</a><a href="contact.html" class="">تواصل معنا</a>
+</div></nav>
+
+<main>
+
+<div class="card">
+  <h2 class="section-title editable">طرق التبرع</h2>
+  <p class="editable">
+    يمكن للمتبرعين دعم برامج وأنشطة الجمعية من خلال الوسائل التالية. جميع الحقول قابلة
+    للتعديل لتناسب بيانات جمعية أثر الفعلية.
+  </p>
+  <ul class="editable">
+    <li>تحويل بنكي إلى حساب الجمعية (أضف رقم الحساب / الآيبان هنا).</li>
+    <li>تحويل عبر المحافظ الإلكترونية (إن وجدت).</li>
+    <li>تبرعات عينية (مواد غذائية، مستلزمات مدرسية، ملابس...).</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h3 class="section-title editable">التواصل بخصوص التبرعات</h3>
+  <p class="editable">
+    رقم الواتساب للتواصل: 01080241666
+    <br>
+    يمكن إضافة رقم آخر أو بريد مخصص للتبرعات.
+  </p>
+</div>
+
+</main>
+
+<footer>© جمعية أثر لتنمية المجتمع – 2025</footer>
+
+<button id="backToTop" title="إلى الأعلى">↑</button>
+
+<div id="devToggle" class="dev-toggle">وضع المطور</div>
+
+<div id="devPanel" class="dev-panel">
+  <h3>لوحة المطور</h3>
+  <p class="hint">يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.</p>
+
+  <div id="volTools">
+    <hr>
+    <strong>إدارة المتطوعين</strong>
+    <p class="hint">قبل إضافة متطوع، ارفع صورة المتطوع في المسار assets/images/volunteers/.</p>
+    <label>اللجنة الحالية:</label>
+    <select id="volComSelect"></select>
+
+    <label>اسم لجنة جديدة (اختياري):</label>
+    <input id="newCommitteeName" type="text" placeholder="مثال: لجنة العلاقات العامة">
+    <button id="btnAddCommittee" class="dev-btn-sub">إضافة لجنة جديدة</button>
+
+    <label>اسم المتطوع:</label>
+    <input id="volName" type="text" placeholder="اسم المتطوع">
+
+    <label>دور المتطوع:</label>
+    <input id="volRole" type="text" placeholder="مثال: مصمم جرافيك">
+
+    <label>اسم ملف الصورة:</label>
+    <input id="volPhoto" type="text" placeholder="مثال: ali.png أو المسار الكامل">
+
+    <button id="btnAddVolunteer" class="dev-btn-primary">إضافة المتطوع</button>
+    <button id="btnResetVolunteers" class="dev-btn-danger">إعادة تعيين بيانات المتطوعين</button>
+  </div>
+</div>
+
+
+
+<script src="dev.js"></script>
+</body>
+</html>

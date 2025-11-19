@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>تواصل معنا - جمعية أثر</title>
+<link rel="stylesheet" href="main.css"/>
+</head>
+<body data-page="contact">
+
+<header>
+  <img src="assets/images/logo.png" alt="شعار جمعية أثر">
+  <h1 class="editable">جمعية أثر لتنمية المجتمع</h1>
+  <p class="editable">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
+</header>
+
+<nav><div class="inner">
+<a href="index.html" class="">الرئيسية</a><a href="about.html" class="">من نحن</a><a href="projects.html" class="">مشاريعنا</a><a href="news.html" class="">أخبار الجمعية</a><a href="volunteers.html" class="">المتطوعون</a><a href="gallery.html" class="">معرض الصور</a><a href="donate.html" class="">التبرعات</a><a href="team.html" class="">مجلس الإدارة</a><a href="contact.html" class="active">تواصل معنا</a>
+</div></nav>
+
+<main>
+
+<div class="card">
+  <h2 class="section-title editable">تواصل معنا</h2>
+  <p class="editable">
+    نرحب بالتواصل معكم للاستفسار عن أنشطة الجمعية أو تقديم مقترحات وشراكات.
+  </p>
+
+  <p class="editable">
+    📍 العنوان: جمعية أثر لتنمية المجتمع
+    <br>
+    📞 واتساب: 01080241666
+    <br>
+    ✉️ البريد الإلكتروني: example@example.com (قم بتعديله لبريد الجمعية عند توفره)
+    <br>
+    🌐 روابط السوشيال: (أضف روابط فيسبوك / إنستجرام / تويتر عند توفرها)
+  </p>
+
+  <form class="contact-form" action="mailto:example@example.com" method="post" enctype="text/plain">
+    <label>الاسم الكامل:
+      <input type="text" name="name" required>
+    </label>
+    <label>رقم الجوال:
+      <input type="text" name="phone">
+    </label>
+    <label>البريد الإلكتروني:
+      <input type="email" name="email">
+    </label>
+    <label>رسالتك:
+      <textarea name="message" required></textarea>
+    </label>
+    <button type="submit" class="btn-primary">إرسال الرسالة</button>
+  </form>
+</div>
+
+</main>
+
+<footer>© جمعية أثر لتنمية المجتمع – 2025</footer>
+
+<button id="backToTop" title="إلى الأعلى">↑</button>
+
+<div id="devToggle" class="dev-toggle">وضع المطور</div>
+
+<div id="devPanel" class="dev-panel">
+  <h3>لوحة المطور</h3>
+  <p class="hint">يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.</p>
+
+  <div id="volTools">
+    <hr>
+    <strong>إدارة المتطوعين</strong>
+    <p class="hint">قبل إضافة متطوع، ارفع صورة المتطوع في المسار assets/images/volunteers/.</p>
+    <label>اللجنة الحالية:</label>
+    <select id="volComSelect"></select>
+
+    <label>اسم لجنة جديدة (اختياري):</label>
+    <input id="newCommitteeName" type="text" placeholder="مثال: لجنة العلاقات العامة">
+    <button id="btnAddCommittee" class="dev-btn-sub">إضافة لجنة جديدة</button>
+
+    <label>اسم المتطوع:</label>
+    <input id="volName" type="text" placeholder="اسم المتطوع">
+
+    <label>دور المتطوع:</label>
+    <input id="volRole" type="text" placeholder="مثال: مصمم جرافيك">
+
+    <label>اسم ملف الصورة:</label>
+    <input id="volPhoto" type="text" placeholder="مثال: ali.png أو المسار الكامل">
+
+    <button id="btnAddVolunteer" class="dev-btn-primary">إضافة المتطوع</button>
+    <button id="btnResetVolunteers" class="dev-btn-danger">إعادة تعيين بيانات المتطوعين</button>
+  </div>
+</div>
+
+
+
+<script src="dev.js"></script>
+</body>
+</html>
