@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<html lang="ar" dir="rtl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>معرض الصور - جمعية أثر</title>
-<link rel="stylesheet" href="main.css"/>
+<link rel="stylesheet" href="main.css">
 </head>
 <body data-page="gallery">
 
 <header>
   <img src="assets/images/logo.png" alt="شعار جمعية أثر">
-  <h1 class="editable">جمعية أثر لتنمية المجتمع</h1>
-  <p class="editable">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
+  <h1 class="editable" contenteditable="true">جمعية أثر لتنمية المجتمع</h1>
+  <p class="editable" contenteditable="true">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
 </header>
 
 <nav><div class="inner">
@@ -21,27 +20,39 @@
 <main>
 
 <div class="card">
-  <h2 class="section-title editable">معرض الصور والفيديو</h2>
-  <p class="editable">
-    استخدم هذا القسم لعرض صور وفيديوهات لأنشطة الجمعية. لعرض صورة جديدة، ارفع الملف إلى
-    المسار <strong>assets/images</strong> ثم أضف سطرًا جديدًا داخل شبكة الصور.
-  </p>
-</div>
+  <h2 class="section-title editable" contenteditable="true">معرض الصور والفيديو</h2>
+  <p class="editable" contenteditable="true">
+    صور تجمعنا💙
+     </p>
 
-<div class="gallery-grid">
-  <img src="assets/images/sample1.jpg" alt="صورة مثال 1" class="gallery-img">
-  <img src="assets/images/sample2.jpg" alt="صورة مثال 2" class="gallery-img">
+    </section>
+    <section class="gallery-section">
+      <h3 class="gallery-section-title">سهرة الخميس</h3>
+      <div class="gallery-grid">
+        <img src="assets/images/gallery/sahra1.jpg" class="gallery-img">
+        <img src="assets/images/gallery/sahra2.jpg" class="gallery-img">
+      </div>
+    </section>
+    
+  <section class="gallery-section">
+    <h3 class="gallery-section-title editable">قسم افتراضي</h3>
+    <p class="editable">يمكنك تغيير عنوان هذا القسم ووصفه، أو إضافة أقسام جديدة من وضع المطوّر.</p>
+    <div class="gallery-grid">
+      <img src="assets/images/gallery/a1.jpg" alt="صورة من المعرض" class="gallery-img">
+    </div>
+    <button type="button" class="dev-btn-sub gallery-load-section">تحميل صور هذا القسم من مجلد</button>
+  </section>
 </div>
 
 </main>
 
 <footer>© جمعية أثر لتنمية المجتمع – 2025</footer>
 
-<button id="backToTop" title="إلى الأعلى">↑</button>
+<button id="backToTop" title="إلى الأعلى" style="display: block;">↑</button>
 
 <div id="devToggle" class="dev-toggle">وضع المطور</div>
 
-<div id="devPanel" class="dev-panel">
+<div id="devPanel" class="dev-panel open">
   <h3>لوحة المطور</h3>
   <p class="hint">
     يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.
@@ -51,11 +62,17 @@
 
   <div style="margin-top:0.75rem;">
     <strong>صور المعرض:</strong>
-    <button id="selectGalleryFolder" class="dev-btn-sub" type="button">اختر مجلد صور المعرض</button>
-    <input type="file" id="galleryFolderPicker" webkitdirectory directory multiple style="display:none;">
+    <button id="selectGalleryFolder" class="dev-btn-sub" type="button">اختر مجلد صور المعرض (عام)</button>
+    <input type="file" id="galleryFolderPicker" webkitdirectory="" directory="" multiple="" style="display:none;">
   </div>
 
-  <div id="volTools">
+  <div style="margin-top:0.75rem;">
+    <strong>أقسام المعرض:</strong>
+    <button id="addGallerySectionBtn" class="dev-btn-sub" type="button">إضافة قسم جديد</button>
+    <p class="hint">يمكنك إضافة أقسام مثل "حفلة اليوم" أو "سهرة الخميس"، ثم تحميل صور كل قسم من مجلد مستقل.</p>
+  </div>
+
+  <div id="volTools" style="display: none;">
     <hr>
     <strong>إدارة المتطوعين</strong>
     <p class="hint">قبل إضافة متطوع، ارفع صورة المتطوع في المسار assets/images/volunteers/.</p>
@@ -82,11 +99,12 @@
 
 
 <div id="lightbox" class="lightbox">
-  <span id="closeLightbox" class="lightbox-close">&times;</span>
+  <span id="closeLightbox" class="lightbox-close">×</span>
   <img id="lightboxImg" class="lightbox-img">
 </div>
 
 
 <script src="dev.js"></script>
-</body>
-</html>
+
+
+</body></html>

@@ -7,12 +7,23 @@ const VOL_KEY = "ATHAR_VOLUNTEERS_V1";
 // تخزين الصور التي يتم اختيارها من المجلدات المحلية (لا تُرفع، فقط للاستخدام داخل الجلسة الحالية)
 let volunteerImages = [];
 let galleryImages = [];
+let currentGallerySection = null;
 
 document.addEventListener("DOMContentLoaded", () => {
   const devToggle = document.getElementById("devToggle");
   const devPanel = document.getElementById("devPanel");
   const body = document.body;
   const pageId = body.dataset.page || "";
+  // تأكد من أن وضع المطور مغلق عند فتح الصفحة
+  devMode = false;
+  if (devPanel) devPanel.classList.remove("open");
+  body.classList.remove("dev-mode");
+
+  // إلغاء أي contenteditable مفعّل سابقًا
+  if (typeof applyEditable === "function") {
+    applyEditable(false);
+  }
+
 
   // زر تحميل الصفحة بعد التعديل
   const downloadBtn = document.getElementById("btnDownloadPage");
@@ -46,16 +57,99 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+
+
+  // إعداد أقسام المعرض (إضافة قسم وتحميل صور قسم)
+  if (pageId === "gallery") {
+    const sectionsContainer = document.getElementById("gallerySections");
+    const addSectionBtn = document.getElementById("addGallerySectionBtn");
+
+    function attachSectionButtons(root) {
+      if (!root) return;
+      root.querySelectorAll(".gallery-load-section").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (!document.body.classList.contains("dev-mode")) {
+            alert("هذه الأداة متاحة فقط في وضع المطوّر.");
+            return;
+          }
+          const section = btn.closest(".gallery-section");
+          if (!section) return;
+          currentGallerySection = section;
+          if (galleryPicker) {
+            galleryPicker.click();
+          } else {
+            alert("لم يتم العثور على أداة اختيار مجلد المعرض.");
+          }
+        });
+      });
+    }
+
+    if (sectionsContainer) {
+      attachSectionButtons(sectionsContainer);
+    }
+
+    if (addSectionBtn && sectionsContainer) {
+      addSectionBtn.addEventListener("click", () => {
+        if (!document.body.classList.contains("dev-mode")) {
+          alert("يمكن إضافة قسم جديد فقط من وضع المطوّر.");
+          return;
+        }
+        const title = prompt("عنوان القسم الجديد:", "قسم جديد");
+        if (title === null) return;
+        const section = document.createElement("section");
+        section.className = "gallery-section";
+        section.innerHTML = `
+  <h3 class="gallery-section-title editable">${title || "قسم جديد"}</h3>
+  <p class="editable">وصف مختصر لهذا القسم، يمكنك تعديله من وضع المطوّر.</p>
+  <div class="gallery-grid"></div>
+  <button type="button" class="dev-btn-sub gallery-load-section">تحميل صور هذا القسم من مجلد</button>
+        `;
+        sectionsContainer.appendChild(section);
+        attachSectionButtons(section);
+      });
+    }
+  }
+
+
   // إعداد اختيار مجلد صور المعرض (إن وُجد في هذه الصفحة)
   const galleryPicker = document.getElementById("galleryFolderPicker");
   const galleryBtn = document.getElementById("selectGalleryFolder");
   if (galleryPicker && galleryBtn) {
-    galleryBtn.addEventListener("click", () => galleryPicker.click());
+    galleryBtn.addEventListener("click", () => {
+      currentGallerySection = null;
+      galleryPicker.click();
+    });
     galleryPicker.addEventListener("change", (e) => {
       galleryImages = Array.from(e.target.files).filter((f) =>
         f.type.startsWith("image")
       );
       alert("تم تحميل " + galleryImages.length + " صورة للمعرض.");
+
+      // إذا كان هناك قسم محدد حاليًا، قم بإنشاء شبكة الصور له تلقائيًا
+      if (currentGallerySection && galleryImages.length) {
+        const grid = currentGallerySection.querySelector(".gallery-grid");
+        if (grid) {
+          grid.innerHTML = "";
+          galleryImages.forEach((file) => {
+            const imgEl = document.createElement("img");
+            imgEl.className = "gallery-img";
+            // محاولة استنتاج اسم المجلد الفرعي داخل المعرض (إن وُجد)
+            let rel = file.webkitRelativePath || file.name;
+            const parts = rel.split(/[/\\]/);
+            let folder = "";
+            let fileName = parts[parts.length - 1];
+            if (parts.length > 1) {
+              folder = parts[parts.length - 2];
+            }
+            let src = "assets/images/gallery/";
+            if (folder) src += folder + "/";
+            src += fileName;
+            imgEl.src = src;
+            imgEl.alt = fileName;
+            grid.appendChild(imgEl);
+          });
+        }
+      }
     });
   }
 
@@ -103,13 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (lb && lbImg && closeLb) {
     document.querySelectorAll(".gallery-img").forEach((img) => {
       img.addEventListener("click", () => {
-        // في وضع المطور ومع توفر صور المعرض، نفتح نافذة اختيار صورة بدلاً من عرض اللايت بوكس
-        if (document.body.classList.contains("dev-mode") && galleryImages.length) {
-          chooseGalleryImage((fileName) => {
-            img.src = "assets/images/gallery/" + fileName;
-          });
-          return;
-        }
+        // دائمًا نعرض الصورة في اللايت بوكس بشكل كبير
         lb.style.display = "block";
         lbImg.src = img.src;
       });
@@ -148,7 +236,7 @@ function loadVolData() {
             id: "d1",
             name: "متطوع ديزاين 1",
             role: "مصمم جرافيك",
-            photo: "assets/images/volunteers/design1.jpg"
+            photo: "assets/images/volunteers/ahmed.jpg"
           }
         ]
       },
@@ -160,7 +248,7 @@ function loadVolData() {
             id: "m1",
             name: "متطوع ميديا 1",
             role: "مونتير / سوشيال ميديا",
-            photo: "assets/images/volunteers/media1.jpg"
+            photo: "assets/images/volunteers/said.jpg"
           }
         ]
       }
@@ -176,6 +264,23 @@ function saveVolData(data) {
   }
 }
 
+
+function refreshVolDeleteUI() {
+  const sel = document.getElementById("deleteVolunteerSelect");
+  if (!sel) return;
+  sel.innerHTML = "";
+  const data = loadVolData();
+  data.committees.forEach((c) => {
+    c.volunteers.forEach((v) => {
+      const opt = document.createElement("option");
+      opt.value = v.id;
+      opt.textContent = c.name + " - " + v.name;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+
 function setupVolunteers(devPanel) {
   const root = document.getElementById("volunteersRoot");
   if (!root) return;
@@ -183,6 +288,7 @@ function setupVolunteers(devPanel) {
   let data = loadVolData();
   renderVolunteers(root, data);
   buildVolTools(devPanel, data, root);
+  refreshVolDeleteUI();
 }
 
 function renderVolunteers(root, data) {
@@ -248,6 +354,7 @@ function renderVolunteers(root, data) {
         v.photo = "assets/images/volunteers/" + fileName;
         saveVolData(data);
         renderVolunteers(root, data);
+        refreshVolDeleteUI();
       });
       return;
     }
@@ -268,6 +375,7 @@ function renderVolunteers(root, data) {
 
     saveVolData(data);
     renderVolunteers(root, data);
+    refreshVolDeleteUI();
   });
 }
 
@@ -283,6 +391,8 @@ function buildVolTools(devPanel, data, root) {
   const volPhotoInput = document.getElementById("volPhoto");
   const addVolBtn = document.getElementById("btnAddVolunteer");
   const resetVolBtn = document.getElementById("btnResetVolunteers");
+  const delSelect = document.getElementById("deleteVolunteerSelect");
+  const delBtn = document.getElementById("btnDeleteVolunteer");
 
   function refreshComOptions() {
     comSelect.innerHTML = "";
@@ -294,6 +404,7 @@ function buildVolTools(devPanel, data, root) {
     });
   }
   refreshComOptions();
+  refreshVolDeleteUI();
 
   addComBtn.addEventListener("click", () => {
     const name = (newComNameInput.value || "").trim();
@@ -340,6 +451,7 @@ function buildVolTools(devPanel, data, root) {
     com.volunteers.push(vol);
     saveVolData(data);
     renderVolunteers(root, data);
+    refreshVolDeleteUI();
 
     volNameInput.value = "";
     volRoleInput.value = "";
@@ -353,7 +465,40 @@ function buildVolTools(devPanel, data, root) {
     saveVolData(data);
     refreshComOptions();
     renderVolunteers(root, data);
+    refreshVolDeleteUI();
   });
+
+
+  if (delBtn && delSelect) {
+    delBtn.addEventListener("click", () => {
+      if (!document.body.classList.contains("dev-mode")) {
+        alert("يمكن حذف المتطوع فقط من وضع المطوّر.");
+        return;
+      }
+      const volId = delSelect.value;
+      if (!volId) {
+        alert("اختر المتطوع الذي تريد حذفه أولاً.");
+        return;
+      }
+      if (!confirm("هل أنت متأكد من حذف هذا المتطوع؟")) return;
+
+      let data = loadVolData();
+      let changed = false;
+      data.committees.forEach((c) => {
+        const before = c.volunteers.length;
+        c.volunteers = c.volunteers.filter((v) => v.id !== volId);
+        if (c.volunteers.length !== before) changed = true;
+      });
+      if (!changed) {
+        alert("تعذر العثور على هذا المتطوع في البيانات.");
+        return;
+      }
+      saveVolData(data);
+      renderVolunteers(root, data);
+      refreshVolDeleteUI();
+    });
+  }
+
 }
 
 // نافذة اختيار صورة من مجلد المتطوعين

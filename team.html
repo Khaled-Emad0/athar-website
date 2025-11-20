@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<html lang="ar" dir="rtl"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>مجلس الإدارة - جمعية أثر</title>
-<link rel="stylesheet" href="main.css"/>
+<link rel="stylesheet" href="main.css">
 </head>
-<body data-page="team">
+<body data-page="team" class="dev-mode">
 
 <header>
   <img src="assets/images/logo.png" alt="شعار جمعية أثر">
-  <h1 class="editable">جمعية أثر لتنمية المجتمع</h1>
-  <p class="editable">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
+  <h1 class="editable" contenteditable="true">جمعية أثر لتنمية المجتمع</h1>
+  <p class="editable" contenteditable="true">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
 </header>
 
 <nav><div class="inner">
@@ -21,25 +20,22 @@
 <main>
 
 <div class="card">
-  <h2 class="section-title editable">مجلس الإدارة</h2>
-  <p class="editable">
-    يمكن تعديل هذه البيانات لتشمل أسماء مجلس الإدارة وهيكل الجمعية الإداري.
+  <h2 class="section-title editable" contenteditable="true">مجلس الإدارة</h2>
+  <p class="editable" contenteditable="true">
+    مجموعة من البشر.
   </p>
 </div>
 
 <div class="card">
-  <h3 class="section-title editable">رئيس مجلس الإدارة</h3>
-  <p class="editable">
-    الاسم: محمد سعيد
-    <br>
-    نبذة: نص تعريفي مختصر عن رئيس مجلس الإدارة، قابل للتعديل بالكامل.
-  </p>
+  <h3 class="section-title editable" contenteditable="true">رئيس مجلس الإدارة</h3>
+  <p class="editable" contenteditable="true">
+    الاسم: كائن بشري يعيش ويتعايش.</p>
 </div>
 
 <div class="card">
-  <h3 class="section-title editable">أعضاء مجلس الإدارة</h3>
-  <p class="editable">
-    يمكن إضافة أسماء أعضاء المجلس وأدوارهم في هذا القسم.
+  <h3 class="section-title editable" contenteditable="true">أعضاء مجلس الإدارة</h3>
+  <p class="editable" contenteditable="true">
+    كمان مجموعة من البشر.
   </p>
 </div>
 
@@ -47,11 +43,11 @@
 
 <footer>© جمعية أثر لتنمية المجتمع – 2025</footer>
 
-<button id="backToTop" title="إلى الأعلى">↑</button>
+<button id="backToTop" title="إلى الأعلى" style="display: block;">↑</button>
 
 <div id="devToggle" class="dev-toggle">وضع المطور</div>
 
-<div id="devPanel" class="dev-panel">
+<div id="devPanel" class="dev-panel open">
   <h3>لوحة المطور</h3>
   <p class="hint">
     يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.
@@ -59,7 +55,7 @@
 
   <button id="btnDownloadPage" class="dev-btn-sub" type="button">تحميل هذه الصفحة بعد التعديل</button>
 
-  <div id="volTools">
+  <div id="volTools" style="display: none;">
     <hr>
     <strong>إدارة المتطوعين</strong>
     <p class="hint">قبل إضافة متطوع، ارفع صورة المتطوع في المسار assets/images/volunteers/.</p>
@@ -87,5 +83,6 @@
 
 
 <script src="dev.js"></script>
-</body>
-</html>
+
+
+</body></html>

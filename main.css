@@ -326,3 +326,27 @@ body.dev-mode .editable{
   display:none;
   z-index:40;
 }
+
+
+/* أقسام المعرض */
+.gallery-section{
+  margin-top:24px;
+  padding:16px;
+  border-radius:16px;
+  background:#fafafa;
+}
+.gallery-section-title{
+  margin-bottom:8px;
+}
+.gallery-section .gallery-grid{
+  margin-top:12px;
+}
+.gallery-load-section{
+  margin-top:12px;
+}
+
+/* إظهار أزرار أدوات المعرض فقط في وضع المطوّر إن رغبت */
+body:not(.dev-mode) .gallery-load-section,
+body:not(.dev-mode) #addGallerySectionBtn{
+  opacity:0.8;
+}
