@@ -1,171 +1,32 @@
+// =======================
+// إعدادات عامة لوضع المطوّر
+// =======================
 
 let devMode = false;
-const DEV_PASSWORD = "112233";
+const DEV_PASSWORD = "1";
 const VOL_KEY = "ATHAR_VOLUNTEERS_V1";
 
-
-// تخزين الصور التي يتم اختيارها من المجلدات المحلية (لا تُرفع، فقط للاستخدام داخل الجلسة الحالية)
-let volunteerImages = [];
-let galleryImages = [];
-let currentGallerySection = null;
-
 document.addEventListener("DOMContentLoaded", () => {
-  const devToggle = document.getElementById("devToggle");
-  const devPanel = document.getElementById("devPanel");
   const body = document.body;
   const pageId = body.dataset.page || "";
-  // تأكد من أن وضع المطور مغلق عند فتح الصفحة
-  devMode = false;
-  if (devPanel) devPanel.classList.remove("open");
-  body.classList.remove("dev-mode");
 
-  // إلغاء أي contenteditable مفعّل سابقًا
-  if (typeof applyEditable === "function") {
-    applyEditable(false);
-  }
+  const devToggle = document.getElementById("devToggle");
+  const devPanel  = document.getElementById("devPanel");
 
-
-  // زر تحميل الصفحة بعد التعديل
-  const downloadBtn = document.getElementById("btnDownloadPage");
-  if (downloadBtn) {
-    downloadBtn.addEventListener("click", () => {
-      const html = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
-      const blob = new Blob([html], { type: "text/html" });
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      const parts = window.location.pathname.split("/");
-      let filename = parts[parts.length - 1] || "index.html";
-      if (!filename.endsWith(".html")) filename = "page.html";
-      a.download = filename;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-    });
-  }
-
-  // إعداد اختيار مجلد صور المتطوعين (إن وُجد في هذه الصفحة)
-  const volunteerPicker = document.getElementById("volunteerFolderPicker");
-  const volunteerBtn = document.getElementById("selectVolunteerFolder");
-  if (volunteerPicker && volunteerBtn) {
-    volunteerBtn.addEventListener("click", () => volunteerPicker.click());
-    volunteerPicker.addEventListener("change", (e) => {
-      volunteerImages = Array.from(e.target.files).filter((f) =>
-        f.type.startsWith("image")
-      );
-      alert("تم تحميل " + volunteerImages.length + " صورة متاحة للاختيار للمتطوعين.");
-    });
-  }
-
-
-
-  // إعداد أقسام المعرض (إضافة قسم وتحميل صور قسم)
-  if (pageId === "gallery") {
-    const sectionsContainer = document.getElementById("gallerySections");
-    const addSectionBtn = document.getElementById("addGallerySectionBtn");
-
-    function attachSectionButtons(root) {
-      if (!root) return;
-      root.querySelectorAll(".gallery-load-section").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          if (!document.body.classList.contains("dev-mode")) {
-            alert("هذه الأداة متاحة فقط في وضع المطوّر.");
-            return;
-          }
-          const section = btn.closest(".gallery-section");
-          if (!section) return;
-          currentGallerySection = section;
-          if (galleryPicker) {
-            galleryPicker.click();
-          } else {
-            alert("لم يتم العثور على أداة اختيار مجلد المعرض.");
-          }
-        });
-      });
-    }
-
-    if (sectionsContainer) {
-      attachSectionButtons(sectionsContainer);
-    }
-
-    if (addSectionBtn && sectionsContainer) {
-      addSectionBtn.addEventListener("click", () => {
-        if (!document.body.classList.contains("dev-mode")) {
-          alert("يمكن إضافة قسم جديد فقط من وضع المطوّر.");
-          return;
-        }
-        const title = prompt("عنوان القسم الجديد:", "قسم جديد");
-        if (title === null) return;
-        const section = document.createElement("section");
-        section.className = "gallery-section";
-        section.innerHTML = `
-  <h3 class="gallery-section-title editable">${title || "قسم جديد"}</h3>
-  <p class="editable">وصف مختصر لهذا القسم، يمكنك تعديله من وضع المطوّر.</p>
-  <div class="gallery-grid"></div>
-  <button type="button" class="dev-btn-sub gallery-load-section">تحميل صور هذا القسم من مجلد</button>
-        `;
-        sectionsContainer.appendChild(section);
-        attachSectionButtons(section);
-      });
-    }
-  }
-
-
-  // إعداد اختيار مجلد صور المعرض (إن وُجد في هذه الصفحة)
-  const galleryPicker = document.getElementById("galleryFolderPicker");
-  const galleryBtn = document.getElementById("selectGalleryFolder");
-  if (galleryPicker && galleryBtn) {
-    galleryBtn.addEventListener("click", () => {
-      currentGallerySection = null;
-      galleryPicker.click();
-    });
-    galleryPicker.addEventListener("change", (e) => {
-      galleryImages = Array.from(e.target.files).filter((f) =>
-        f.type.startsWith("image")
-      );
-      alert("تم تحميل " + galleryImages.length + " صورة للمعرض.");
-
-      // إذا كان هناك قسم محدد حاليًا، قم بإنشاء شبكة الصور له تلقائيًا
-      if (currentGallerySection && galleryImages.length) {
-        const grid = currentGallerySection.querySelector(".gallery-grid");
-        if (grid) {
-          grid.innerHTML = "";
-          galleryImages.forEach((file) => {
-            const imgEl = document.createElement("img");
-            imgEl.className = "gallery-img";
-            // محاولة استنتاج اسم المجلد الفرعي داخل المعرض (إن وُجد)
-            let rel = file.webkitRelativePath || file.name;
-            const parts = rel.split(/[/\\]/);
-            let folder = "";
-            let fileName = parts[parts.length - 1];
-            if (parts.length > 1) {
-              folder = parts[parts.length - 2];
-            }
-            let src = "assets/images/gallery/";
-            if (folder) src += folder + "/";
-            src += fileName;
-            imgEl.src = src;
-            imgEl.alt = fileName;
-            grid.appendChild(imgEl);
-          });
-        }
-      }
-    });
-  }
-
-
-  // Back to top
+  // زر الرجوع للأعلى
   const backBtn = document.getElementById("backToTop");
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 200) backBtn.style.display = "block";
-    else backBtn.style.display = "none";
-  });
-  backBtn.addEventListener("click", () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  });
+  if (backBtn) {
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 200) backBtn.style.display = "block";
+      else backBtn.style.display = "none";
+    });
+    backBtn.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  }
 
-  // Dev mode toggle with password
-  if (devToggle) {
+  // تفعيل وضع المطوّر بكلمة مرور
+  if (devToggle && devPanel) {
     devToggle.addEventListener("click", () => {
       if (!devMode) {
         const pwd = prompt("أدخل كلمة المرور لوضع المطوّر:");
@@ -190,25 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Lightbox for gallery
-  const lb = document.getElementById("lightbox");
-  const lbImg = document.getElementById("lightboxImg");
-  const closeLb = document.getElementById("closeLightbox");
-  if (lb && lbImg && closeLb) {
-    document.querySelectorAll(".gallery-img").forEach((img) => {
-      img.addEventListener("click", () => {
-        // دائمًا نعرض الصورة في اللايت بوكس بشكل كبير
-        lb.style.display = "block";
-        lbImg.src = img.src;
-      });
-    });
-    closeLb.addEventListener("click", () => (lb.style.display = "none"));
-    lb.addEventListener("click", (e) => {
-      if (e.target === lb) lb.style.display = "none";
-    });
-  }
-
-  // Volunteers management (only on volunteers page)
+  // إعداد صفحة المتطوعين فقط
   if (pageId === "volunteers") {
     setupVolunteers(devPanel);
   } else {
@@ -217,16 +60,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// Volunteers data helpers
+// =======================
+// بيانات المتطوعين (localStorage)
+// =======================
+
 function loadVolData() {
   try {
     const raw = localStorage.getItem(VOL_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.committees)) return parsed;
+    }
   } catch (e) {
     console.warn("تعذر قراءة بيانات المتطوعين:", e);
   }
-  // default structure
+
+  // بيانات افتراضية
   return {
+    joinFormUrl: "",
     committees: [
       {
         id: "design",
@@ -236,7 +87,9 @@ function loadVolData() {
             id: "d1",
             name: "متطوع ديزاين 1",
             role: "مصمم جرافيك",
-            photo: "assets/images/volunteers/ahmed.jpg"
+            photo: "assets/images/volunteers/ali1.jpg",
+            whatsapp: "",
+            bio: ""
           }
         ]
       },
@@ -248,7 +101,9 @@ function loadVolData() {
             id: "m1",
             name: "متطوع ميديا 1",
             role: "مونتير / سوشيال ميديا",
-            photo: "assets/images/volunteers/said.jpg"
+            photo: "assets/images/volunteers/braa.jpg",
+            whatsapp: "",
+            bio: ""
           }
         ]
       }
@@ -260,41 +115,36 @@ function saveVolData(data) {
   try {
     localStorage.setItem(VOL_KEY, JSON.stringify(data));
   } catch (e) {
-    alert("تعذر حفظ بيانات المتطوعين في المتصفح.");
+    alert("تعذر حفظ بيانات المتطوعين في هذا المتصفح.");
   }
 }
 
+// =======================
+// إعداد صفحة المتطوعين
+// =======================
 
-function refreshVolDeleteUI() {
-  const sel = document.getElementById("deleteVolunteerSelect");
-  if (!sel) return;
-  sel.innerHTML = "";
-  const data = loadVolData();
-  data.committees.forEach((c) => {
-    c.volunteers.forEach((v) => {
-      const opt = document.createElement("option");
-      opt.value = v.id;
-      opt.textContent = c.name + " - " + v.name;
-      sel.appendChild(opt);
-    });
-  });
-}
-
+let currentVolData = null;
+let volJoinUrl = "";
 
 function setupVolunteers(devPanel) {
   const root = document.getElementById("volunteersRoot");
   if (!root) return;
 
-  let data = loadVolData();
+  const data = loadVolData();
+  currentVolData = data;
+
   renderVolunteers(root, data);
+  updateJoinLink(data);
+  setupVolModal();
   buildVolTools(devPanel, data, root);
-  refreshVolDeleteUI();
 }
 
+// رسم المتطوعين واللجان
 function renderVolunteers(root, data) {
   root.innerHTML = "";
+
   data.committees.forEach((com) => {
-    const block = document.createElement("div");
+    const block = document.createElement("section");
     block.className = "committee-block card";
     block.dataset.comId = com.id;
 
@@ -327,74 +177,140 @@ function renderVolunteers(root, data) {
       card.appendChild(img);
       card.appendChild(name);
       card.appendChild(role);
+
+      if (v.whatsapp) {
+        const wa = document.createElement("div");
+        wa.className = "vol-wa-tag";
+        wa.textContent = "متاح للتواصل عبر واتساب";
+        card.appendChild(wa);
+      }
+
+      card.addEventListener("click", () => {
+        openVolModal(v);
+      });
+
       grid.appendChild(card);
     });
 
     block.appendChild(grid);
     root.appendChild(block);
   });
+}
 
-  // Click to edit volunteer when in dev mode
-  root.addEventListener("click", (e) => {
-    const card = e.target.closest(".vol-card");
-    if (!card) return;
-    if (!document.body.classList.contains("dev-mode")) return;
+// تحديث زر طلب الانضمام
+function updateJoinLink(data) {
+  const btn = document.getElementById("joinButton");
+  volJoinUrl = (data && data.joinFormUrl) || "";
+  if (!btn) return;
 
-    const comId = card.dataset.comId;
-    const volId = card.dataset.volId;
-    let data = loadVolData();
-    const com = data.committees.find((c) => c.id === comId);
-    if (!com) return;
-    const v = com.volunteers.find((vv) => vv.id === volId);
-    if (!v) return;
+  if (volJoinUrl) {
+    btn.href = volJoinUrl;
+    btn.style.display = "inline-block";
+  } else {
+    btn.href = "#";
+    btn.style.display = "inline-block"; // يبقى ظاهر بدون رابط حقيقي
+  }
+}
 
-    // إذا تم الضغط على صورة المتطوع مباشرة ولدينا مجلد صور، نفتح نافذة اختيار الصور
-    if (e.target.tagName === "IMG" && volunteerImages.length) {
-      chooseVolunteerImage((fileName) => {
-        v.photo = "assets/images/volunteers/" + fileName;
-        saveVolData(data);
-        renderVolunteers(root, data);
-        refreshVolDeleteUI();
-      });
-      return;
-    }
+// =======================
+// نافذة تفاصيل المتطوع (Modal)
+// =======================
 
-    const newName = prompt("اسم المتطوع:", v.name);
-    if (newName === null) return;
-    const newRole = prompt("دور المتطوع:", v.role);
-    if (newRole === null) return;
-    const newPhoto = prompt(
-      "مسار صورة المتطوع (مثال: assets/images/volunteers/photo.jpg):",
-      v.photo
-    );
-    if (newPhoto === null) return;
+function setupVolModal() {
+  const modal   = document.getElementById("volModal");
+  const closeBtn = document.getElementById("closeVolModal");
+  if (!modal || !closeBtn) return;
 
-    v.name = newName.trim() || v.name;
-    v.role = newRole.trim() || v.role;
-    v.photo = newPhoto.trim() || v.photo;
+  closeBtn.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
 
-    saveVolData(data);
-    renderVolunteers(root, data);
-    refreshVolDeleteUI();
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.style.display = "none";
   });
 }
+
+function openVolModal(v) {
+  const modal = document.getElementById("volModal");
+  if (!modal) return;
+
+  const img      = document.getElementById("volModalImg");
+  const nameEl   = document.getElementById("volModalName");
+  const roleEl   = document.getElementById("volModalRole");
+  const bioEl    = document.getElementById("volModalBio");
+  const waLink   = document.getElementById("volModalWhats");
+  const joinLink = document.getElementById("volModalJoin");
+
+  if (img)    img.src = v.photo || "";
+  if (nameEl) nameEl.textContent = v.name || "";
+  if (roleEl) roleEl.textContent = v.role ? "(" + v.role + ")" : "";
+  if (bioEl)  bioEl.textContent  = v.bio || "";
+
+  if (waLink) {
+    if (v.whatsapp) {
+      const clean = v.whatsapp.replace(/\D/g, "");
+      waLink.href = "https://wa.me/" + clean;
+      waLink.style.display = "inline-block";
+    } else {
+      waLink.style.display = "none";
+    }
+  }
+
+  if (joinLink) {
+    if (volJoinUrl) {
+      joinLink.href = volJoinUrl;
+      joinLink.style.display = "inline-block";
+    } else {
+      joinLink.href = "#";
+      joinLink.style.display = "inline-block";
+    }
+  }
+
+  modal.style.display = "block";
+}
+
+// =======================
+// لوحة أدوات المتطوعين (وضع المطوّر)
+// =======================
 
 function buildVolTools(devPanel, data, root) {
   const tools = document.getElementById("volTools");
   if (!tools) return;
 
-  const comSelect = document.getElementById("volComSelect");
-  const newComNameInput = document.getElementById("newCommitteeName");
-  const addComBtn = document.getElementById("btnAddCommittee");
-  const volNameInput = document.getElementById("volName");
-  const volRoleInput = document.getElementById("volRole");
-  const volPhotoInput = document.getElementById("volPhoto");
-  const addVolBtn = document.getElementById("btnAddVolunteer");
-  const resetVolBtn = document.getElementById("btnResetVolunteers");
-  const delSelect = document.getElementById("deleteVolunteerSelect");
-  const delBtn = document.getElementById("btnDeleteVolunteer");
+  // التبويبات
+  const tabButtons = tools.querySelectorAll(".dev-tab-btn");
+  const tabs       = tools.querySelectorAll(".dev-tab");
+
+  tabButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.tab;
+      tabButtons.forEach((b) => b.classList.remove("active"));
+      tabs.forEach((t) => t.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = tools.querySelector("#tab-" + target);
+      if (tab) tab.classList.add("active");
+    });
+  });
+
+  const comSelect          = document.getElementById("volComSelect");
+  const newComNameInput    = document.getElementById("newCommitteeName");
+  const addComBtn          = document.getElementById("btnAddCommittee");
+  const volNameInput       = document.getElementById("volName");
+  const volRoleInput       = document.getElementById("volRole");
+  const volPhotoInput      = document.getElementById("volPhoto");
+  const volWhatsInput      = document.getElementById("volWhats");
+  const volBioInput        = document.getElementById("volBio");
+  const addVolBtn          = document.getElementById("btnAddVolunteer");
+  const resetVolBtn        = document.getElementById("btnResetVolunteers");
+  const joinInput          = document.getElementById("joinUrl");
+  const saveJoinBtn        = document.getElementById("btnSaveJoin");
+
+  // عناصر الحذف الجديدة
+  const volDeleteSelect    = document.getElementById("volDeleteSelect");
+  const btnDeleteVolunteer = document.getElementById("btnDeleteVolunteer");
 
   function refreshComOptions() {
+    if (!comSelect) return;
     comSelect.innerHTML = "";
     data.committees.forEach((c) => {
       const opt = document.createElement("option");
@@ -402,163 +318,160 @@ function buildVolTools(devPanel, data, root) {
       opt.textContent = c.name;
       comSelect.appendChild(opt);
     });
+    refreshDeleteList();
   }
-  refreshComOptions();
-  refreshVolDeleteUI();
 
-  addComBtn.addEventListener("click", () => {
-    const name = (newComNameInput.value || "").trim();
-    if (!name) {
-      alert("اكتب اسم اللجنة الجديدة أولاً.");
-      return;
-    }
-    const id = "com_" + Date.now();
-    data.committees.push({ id, name, volunteers: [] });
-    saveVolData(data);
-    refreshComOptions();
-    renderVolunteers(root, data);
-    newComNameInput.value = "";
-  });
-
-  addVolBtn.addEventListener("click", () => {
+  function refreshDeleteList() {
+    if (!volDeleteSelect || !comSelect) return;
+    volDeleteSelect.innerHTML = "";
     const comId = comSelect.value;
-    const name = (volNameInput.value || "").trim();
-    const role = (volRoleInput.value || "").trim();
-    let photo = (volPhotoInput.value || "").trim();
-
-    if (!comId || !name || !role) {
-      alert("يجب إدخال اللجنة، اسم المتطوع، ودوره.");
-      return;
-    }
-    if (!photo) {
-      photo = "assets/images/volunteers/default.png";
-    } else if (!photo.startsWith("assets/")) {
-      photo = "assets/images/volunteers/" + photo;
-    }
-
     const com = data.committees.find((c) => c.id === comId);
-    if (!com) {
-      alert("تعذر العثور على اللجنة.");
-      return;
-    }
+    if (!com) return;
+    com.volunteers.forEach((v) => {
+      const opt = document.createElement("option");
+      opt.value = v.id;
+      opt.textContent = v.name + (v.role ? " — " + v.role : "");
+      volDeleteSelect.appendChild(opt);
+    });
+  }
 
-    const vol = {
-      id: "v_" + Date.now(),
-      name,
-      role,
-      photo
-    };
-    com.volunteers.push(vol);
-    saveVolData(data);
-    renderVolunteers(root, data);
-    refreshVolDeleteUI();
+  refreshComOptions();
 
-    volNameInput.value = "";
-    volRoleInput.value = "";
-    volPhotoInput.value = "";
-  });
+  if (comSelect) {
+    comSelect.addEventListener("change", () => {
+      refreshDeleteList();
+    });
+  }
 
-  resetVolBtn.addEventListener("click", () => {
-    if (!confirm("هل أنت متأكد من إعادة تعيين بيانات المتطوعين للمبدئية؟")) return;
-    localStorage.removeItem(VOL_KEY);
-    data = loadVolData();
-    saveVolData(data);
-    refreshComOptions();
-    renderVolunteers(root, data);
-    refreshVolDeleteUI();
-  });
+  if (joinInput) {
+    joinInput.value = data.joinFormUrl || "";
+  }
 
-
-  if (delBtn && delSelect) {
-    delBtn.addEventListener("click", () => {
-      if (!document.body.classList.contains("dev-mode")) {
-        alert("يمكن حذف المتطوع فقط من وضع المطوّر.");
+  // إضافة لجنة جديدة
+  if (addComBtn) {
+    addComBtn.addEventListener("click", () => {
+      const name = (newComNameInput.value || "").trim();
+      if (!name) {
+        alert("اكتب اسم اللجنة الجديدة أولاً.");
         return;
       }
-      const volId = delSelect.value;
-      if (!volId) {
-        alert("اختر المتطوع الذي تريد حذفه أولاً.");
-        return;
-      }
-      if (!confirm("هل أنت متأكد من حذف هذا المتطوع؟")) return;
+      const id = "com_" + Date.now();
+      data.committees.push({ id, name, volunteers: [] });
+      saveVolData(data);
+      refreshComOptions();
+      renderVolunteers(root, data);
+      newComNameInput.value = "";
+    });
+  }
 
-      let data = loadVolData();
-      let changed = false;
-      data.committees.forEach((c) => {
-        const before = c.volunteers.length;
-        c.volunteers = c.volunteers.filter((v) => v.id !== volId);
-        if (c.volunteers.length !== before) changed = true;
-      });
-      if (!changed) {
-        alert("تعذر العثور على هذا المتطوع في البيانات.");
+  // إضافة متطوع جديد
+  if (addVolBtn) {
+    addVolBtn.addEventListener("click", () => {
+      const comId = comSelect ? comSelect.value : null;
+      const name  = (volNameInput.value || "").trim();
+      const role  = (volRoleInput.value || "").trim();
+      let photo   = (volPhotoInput.value || "").trim();
+      const whatsapp = (volWhatsInput.value || "").trim();
+      const bio      = (volBioInput.value || "").trim();
+
+      if (!comId || !name || !role) {
+        alert("يجب إدخال اللجنة، اسم المتطوع، ودوره.");
         return;
       }
+
+      if (!photo) {
+        photo = "assets/images/volunteers/default.png";
+      } else if (!photo.startsWith("assets/")) {
+        photo = "assets/images/volunteers/" + photo;
+      }
+
+      const com = data.committees.find((c) => c.id === comId);
+      if (!com) {
+        alert("تعذر العثور على اللجنة.");
+        return;
+      }
+
+      const vol = {
+        id: "v_" + Date.now(),
+        name,
+        role,
+        photo,
+        whatsapp,
+        bio
+      };
+
+      com.volunteers.push(vol);
       saveVolData(data);
       renderVolunteers(root, data);
-      refreshVolDeleteUI();
+      refreshDeleteList();
+
+      volNameInput.value  = "";
+      volRoleInput.value  = "";
+      volPhotoInput.value = "";
+      volWhatsInput.value = "";
+      volBioInput.value   = "";
     });
   }
 
-}
+  // حذف متطوع موجود
+  if (btnDeleteVolunteer && volDeleteSelect && comSelect) {
+    btnDeleteVolunteer.addEventListener("click", () => {
+      if (!document.body.classList.contains("dev-mode")) {
+        alert("يمكن حذف المتطوعين فقط من داخل وضع المطوّر.");
+        return;
+      }
+      const comId = comSelect.value;
+      const volId = volDeleteSelect.value;
+      if (!comId || !volId) {
+        alert("اختر اللجنة والمتطوع أولاً.");
+        return;
+      }
 
-// نافذة اختيار صورة من مجلد المتطوعين
-function chooseVolunteerImage(callback) {
-  if (!volunteerImages.length) {
-    alert("لم يتم اختيار مجلد صور المتطوعين بعد.");
-    return;
-  }
-  const box = document.createElement("div");
-  box.style.cssText =
-    "position:fixed;inset:0;background:#0008;display:flex;justify-content:center;align-items:center;z-index:9999;";
-  const inner = document.createElement("div");
-  inner.style.cssText =
-    "background:#fff;padding:16px;border-radius:10px;max-height:80%;overflow:auto;display:flex;flex-wrap:wrap;gap:10px;";
-  volunteerImages.forEach((file) => {
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
-    img.style.cssText =
-      "width:100px;height:100px;object-fit:cover;cursor:pointer;border-radius:6px;border:2px solid transparent;";
-    img.addEventListener("click", () => {
-      callback(file.name);
-      document.body.removeChild(box);
+      const com = data.committees.find((c) => c.id === comId);
+      if (!com) {
+        alert("تعذر العثور على اللجنة.");
+        return;
+      }
+
+      const vol = com.volunteers.find((v) => v.id === volId);
+      if (!vol) {
+        alert("تعذر العثور على المتطوع.");
+        return;
+      }
+
+      if (!confirm('هل أنت متأكد من حذف المتطوع "' + vol.name + '" من هذه اللجنة؟')) {
+        return;
+      }
+
+      com.volunteers = com.volunteers.filter((v) => v.id !== volId);
+      saveVolData(data);
+      renderVolunteers(root, data);
+      refreshDeleteList();
     });
-    inner.appendChild(img);
-  });
-  box.addEventListener("click", (e) => {
-    if (e.target === box) document.body.removeChild(box);
-  });
-  box.appendChild(inner);
-  document.body.appendChild(box);
-}
-
-// نافذة اختيار صورة من مجلد المعرض
-function chooseGalleryImage(callback) {
-  if (!galleryImages.length) {
-    alert("لم يتم اختيار مجلد صور المعرض بعد.");
-    return;
   }
-  const box = document.createElement("div");
-  box.style.cssText =
-    "position:fixed;inset:0;background:#0008;display:flex;justify-content:center;align-items:center;z-index:9999;";
-  const inner = document.createElement("div");
-  inner.style.cssText =
-    "background:#fff;padding:16px;border-radius:10px;max-height:80%;overflow:auto;display:flex;flex-wrap:wrap;gap:10px;";
-  galleryImages.forEach((file) => {
-    const img = document.createElement("img");
-    img.src = URL.createObjectURL(file);
-    img.style.cssText =
-      "width:100px;height:100px;object-fit:cover;cursor:pointer;border-radius:6px;border:2px solid transparent;";
-    img.addEventListener("click", () => {
-      callback(file.name);
-      document.body.removeChild(box);
+
+  // إعادة تعيين المتطوعين للوضع الافتراضي
+  if (resetVolBtn) {
+    resetVolBtn.addEventListener("click", () => {
+      if (!confirm("هل أنت متأكد من إعادة تعيين بيانات المتطوعين للوضع الافتراضي؟")) return;
+      localStorage.removeItem(VOL_KEY);
+      const fresh = loadVolData();
+      saveVolData(fresh);
+      renderVolunteers(root, fresh);
+      data.committees = fresh.committees;
+      if (joinInput) joinInput.value = fresh.joinFormUrl || "";
+      refreshComOptions();
     });
-    inner.appendChild(img);
-  });
-  box.addEventListener("click", (e) => {
-    if (e.target === box) document.body.removeChild(box);
-  });
-  box.appendChild(inner);
-  document.body.appendChild(box);
+  }
+
+  // حفظ رابط نموذج الانضمام
+  if (saveJoinBtn && joinInput) {
+    saveJoinBtn.addEventListener("click", () => {
+      const url = (joinInput.value || "").trim();
+      data.joinFormUrl = url;
+      saveVolData(data);
+      updateJoinLink(data);
+      alert("تم حفظ رابط الانضمام.");
+    });
+  }
 }
-
-

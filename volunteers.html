@@ -5,87 +5,122 @@
 <title>المتطوعون - جمعية أثر</title>
 <link rel="stylesheet" href="main.css">
 </head>
-<body data-page="volunteers" class="dev-mode">
+<body data-page="volunteers">
 
 <header>
   <img src="assets/images/logo.png" alt="شعار جمعية أثر">
-  <h1 class="editable" contenteditable="true">جمعية أثر لتنمية المجتمع</h1>
-  <p class="editable" contenteditable="true">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
+  <h1 class="editable">جمعية أثر لتنمية المجتمع</h1>
+  <p class="editable">نمضي ويبقى الأثر — مشهرة برقم 838 لسنة 2023</p>
 </header>
 
 <nav><div class="inner">
-<a href="index.html" class="">الرئيسية</a><a href="about.html" class="">من نحن</a><a href="projects.html" class="">مشاريعنا</a><a href="news.html" class="">أخبار الجمعية</a><a href="volunteers.html" class="active">المتطوعون</a><a href="gallery.html" class="">معرض الصور</a><a href="donate.html" class="">التبرعات</a><a href="team.html" class="">مجلس الإدارة</a><a href="contact.html" class="">تواصل معنا</a>
+<a href="index.html" class="">الرئيسية</a><a href="about.html" class="">من نحن</a><a href="projects.html" class="">مشاريعنا</a><a href="news.html" class="">أخبار الجمعية</a><a href="gallery.html" class="">معرض الصور</a><a href="volunteers.html" class="active">المتطوعون</a><a href="donate.html" class="">التبرعات</a><a href="team.html" class="">مجلس الإدارة</a><a href="contact.html" class="">تواصل معنا</a>
 </div></nav>
+
 
 <main>
 
 <div class="card">
-  <h2 class="section-title editable" contenteditable="true">المتطوعون</h2>
-  <p class="editable" contenteditable="true">
+  <h2 class="section-title editable">المتطوعون</h2>
+  <p class="editable">
     يلعب المتطوعون دورًا أساسيًا في تحقيق رسالة جمعية أثر، ويتم توزيعهم على لجان مختلفة
     مثل لجنة الديزاين ولجنة الميديا وغيرها من اللجان التي يمكن إضافتها لاحقًا.
   </p>
+  <a id="joinButton" class="btn-primary" href="#" target="_blank">طلب الانضمام كمتطوع</a>
 </div>
 
-<div id="volunteersRoot" class="volunteers-section"><div class="committee-block card" data-com-id="design"><h3 class="committee-title">لجنة الديزاين</h3><div class="volunteers-grid"><div class="vol-card" data-com-id="design" data-vol-id="v_1763659305987"><img src="assets/images/volunteers/khaled.jpg" alt="khaled"><div class="vol-name">khaled</div><div class="vol-role">(نقاش)</div></div><div class="vol-card" data-com-id="design" data-vol-id="v_1763669981082"><img src="assets/images/volunteers/ali1.jpg" alt="احمد يحيي"><div class="vol-name">احمد يحيي</div><div class="vol-role">(الكبير اوي)</div></div><div class="vol-card" data-com-id="design" data-vol-id="v_1763670595297"><img src="assets/images/volunteers/braa.jpg" alt="براء"><div class="vol-name">براء</div><div class="vol-role">(فراش)</div></div></div></div><div class="committee-block card" data-com-id="media"><h3 class="committee-title">لجنة الميديا</h3><div class="volunteers-grid"><div class="vol-card" data-com-id="media" data-vol-id="m1"><img src="assets/images/volunteers/said.jpg" alt="شخص ما"><div class="vol-name">شخص ما</div><div class="vol-role">(اي حاجه)</div></div></div></div></div>
+<div id="volunteersRoot" class="volunteers-section">
+  <!-- يتم توليد بيانات المتطوعين واللجان تلقائيًا من خلال لوحة المطور -->
+</div>
+
+<!-- نافذة منبثقة لعرض تفاصيل المتطوع -->
+<div id="volModal" class="vol-modal">
+  <div class="vol-modal-content">
+    <button id="closeVolModal" class="vol-modal-close">&times;</button>
+    <img id="volModalImg" class="vol-modal-img" alt="">
+    <h3 id="volModalName"></h3>
+    <p id="volModalRole"></p>
+    <p id="volModalBio"></p>
+    <div class="vol-modal-actions">
+      <a id="volModalWhats" class="btn-primary" href="#" target="_blank">تواصل عبر واتساب</a>
+      <a id="volModalJoin" class="btn-outline" href="#" target="_blank">طلب الانضمام</a>
+    </div>
+  </div>
+</div>
 
 </main>
 
 <footer>© جمعية أثر لتنمية المجتمع – 2025</footer>
 
-<button id="backToTop" title="إلى الأعلى" style="display: block;">↑</button>
+<button id="backToTop" title="إلى الأعلى">↑</button>
 
 <div id="devToggle" class="dev-toggle">وضع المطور</div>
 
-<div id="devPanel" class="dev-panel open">
+<div id="devPanel" class="dev-panel">
   <h3>لوحة المطور</h3>
-  <p class="hint">
-    يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.
-  </p>
-
-  <button id="btnDownloadPage" class="dev-btn-sub" type="button">تحميل هذه الصفحة بعد التعديل</button>
-
-  <div style="margin-top:0.75rem;">
-    <strong>صور المتطوعين:</strong>
-    <button id="selectVolunteerFolder" class="dev-btn-sub" type="button">اختر مجلد صور المتطوعين</button>
-    <input type="file" id="volunteerFolderPicker" webkitdirectory="" directory="" multiple="" style="display:none;">
-  </div>
+  <p class="hint">يمكنك تعديل النصوص المظللة باللون الأصفر عند تفعيل وضع المطور. الحفظ يتم داخل هذا المتصفح فقط.</p>
 
   <div id="volTools">
-    <hr>
-    <strong>إدارة المتطوعين</strong>
-    <p class="hint">قبل إضافة متطوع، ارفع صورة المتطوع في المسار assets/images/volunteers/.</p>
-    <label>اللجنة الحالية:</label>
-    <select id="volComSelect"><option value="design">لجنة الديزاين</option><option value="media">لجنة الميديا</option></select>
+    <div class="dev-tabs">
+      <button type="button" class="dev-tab-btn active" data-tab="committees">اللجان</button>
+      <button type="button" class="dev-tab-btn" data-tab="volunteers">المتطوعون</button>
+      <button type="button" class="dev-tab-btn" data-tab="settings">الإعدادات</button>
+    </div>
 
-    <label>اسم لجنة جديدة (اختياري):</label>
-    <input id="newCommitteeName" type="text" placeholder="مثال: لجنة العلاقات العامة">
-    <button id="btnAddCommittee" class="dev-btn-sub">إضافة لجنة جديدة</button>
+    <div id="tab-committees" class="dev-tab active">
+      <strong>إدارة اللجان</strong>
+      <p class="hint">يمكنك إضافة لجان جديدة (مثل لجنة العلاقات العامة، لجنة الموارد، إلخ).</p>
+      <label>اسم لجنة جديدة:</label>
+      <input id="newCommitteeName" type="text" placeholder="مثال: لجنة العلاقات العامة">
+      <button id="btnAddCommittee" class="dev-btn-sub" type="button">إضافة لجنة جديدة</button>
+    </div>
 
-    <label>اسم المتطوع:</label>
-    <input id="volName" type="text" placeholder="اسم المتطوع">
+    <div id="tab-volunteers" class="dev-tab">
+      <strong>إضافة متطوع جديد</strong>
+      <p class="hint">اختر اللجنة أولاً، ثم أدخل بيانات المتطوع. تأكد من رفع صورة المتطوع في المسار assets/images/volunteers/.</p>
 
-    <label>دور المتطوع:</label>
-    <input id="volRole" type="text" placeholder="مثال: مصمم جرافيك">
+      <label>اللجنة:</label>
+      <select id="volComSelect"></select>
 
-    <label>اسم ملف الصورة:</label>
-    <input id="volPhoto" type="text" placeholder="مثال: ali.png أو المسار الكامل">
+      <label>اسم المتطوع:</label>
+      <input id="volName" type="text" placeholder="اسم المتطوع">
 
-    <button id="btnAddVolunteer" class="dev-btn-primary">إضافة المتطوع</button>
-    <button id="btnResetVolunteers" class="dev-btn-danger">إعادة تعيين بيانات المتطوعين</button>
+      <label>دور المتطوع:</label>
+      <input id="volRole" type="text" placeholder="مثال: مصمم جرافيك">
 
-    <hr>
-    <strong>حذف متطوع</strong>
-    <p class="hint">اختر اسم المتطوع من القائمة ثم اضغط على زر حذف المتطوع. يتم حذف المتطوع نهائيًا من البيانات المخزّنة.</p>
-    <label>اختر المتطوع:</label>
-    <select id="deleteVolunteerSelect"><option value="v_1763659305987">لجنة الديزاين - khaled</option><option value="v_1763669981082">لجنة الديزاين - احمد يحيي</option><option value="v_1763670595297">لجنة الديزاين - براء</option><option value="m1">لجنة الميديا - شخص ما</option></select>
-    <button id="btnDeleteVolunteer" class="dev-btn-danger" type="button">حذف المتطوع</button>
+      <label>اسم ملف الصورة:</label>
+      <input id="volPhoto" type="text" placeholder="مثال: ali.png أو المسار الكامل">
+
+      <label>رقم واتساب (اختياري):</label>
+      <input id="volWhats" type="text" placeholder="مثال: 201012345678 بدون +">
+
+      <label>نبذة قصيرة عن المتطوع (اختياري):</label>
+      <input id="volBio" type="text" placeholder="مثال: طالب هندسة مهتم بالتصميم">
+
+      <button id="btnAddVolunteer" class="dev-btn-primary" type="button">إضافة المتطوع</button>
+      <button id="btnResetVolunteers" class="dev-btn-danger" type="button">إعادة تعيين بيانات المتطوعين الافتراضية</button>
+
+      <hr>
+
+      <strong>حذف متطوع</strong>
+      <p class="hint">اختر اللجنة ثم المتطوع الذي تريد حذفه. هذه العملية تحذف المتطوع من هذه اللجنة فقط.</p>
+
+      <label>اختر المتطوع للحذف (من اللجنة المحددة بالأعلى):</label>
+      <select id="volDeleteSelect"></select>
+
+      <button id="btnDeleteVolunteer" class="dev-btn-danger" type="button">حذف المتطوع المحدد</button>
+    </div>
+
+    <div id="tab-settings" class="dev-tab">
+      <strong>إعدادات عامة</strong>
+      <p class="hint">يمكنك ضبط رابط زر "طلب الانضمام" ليشير إلى نموذج Google Forms أو أي رابط آخر.</p>
+      <label>رابط نموذج الانضمام:</label>
+      <input id="joinUrl" type="text" placeholder="مثال: https://forms.gle/...">
+      <button id="btnSaveJoin" class="dev-btn-sub" type="button">حفظ رابط الانضمام</button>
+    </div>
   </div>
 </div>
 
-
-
 <script src="dev.js"></script>
-
 
 </body></html>

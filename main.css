@@ -350,3 +350,106 @@ body:not(.dev-mode) .gallery-load-section,
 body:not(.dev-mode) #addGallerySectionBtn{
   opacity:0.8;
 }
+
+
+/* تبويبات لوحة المتطوعين */
+.dev-tabs{
+  display:flex;
+  gap:4px;
+  margin:6px 0 8px;
+}
+.dev-tab-btn{
+  flex:1;
+  padding:5px 6px;
+  border-radius:999px;
+  border:none;
+  background:#e6f1ff;
+  color:#004a80;
+  cursor:pointer;
+  font-size:11px;
+}
+.dev-tab-btn.active{
+  background:#004a80;
+  color:#ffffff;
+}
+.dev-tab{
+  display:none;
+  margin-top:4px;
+}
+.dev-tab.active{
+  display:block;
+}
+
+/* عرض بطاقة المتطوع في صفحة المتطوعين */
+.vol-wa-tag{
+  margin-top:4px;
+  font-size:12px;
+  color:#007b3a;
+}
+
+/* نافذة تفاصيل المتطوع */
+.vol-modal{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  z-index:9000;
+}
+.vol-modal-content{
+  background:#ffffff;
+  max-width:420px;
+  margin:70px auto;
+  padding:18px 18px 16px;
+  border-radius:16px;
+  text-align:center;
+  position:relative;
+  box-shadow:0 8px 24px rgba(0,0,0,0.4);
+}
+.vol-modal-img{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#e3edf7;
+  margin-bottom:10px;
+}
+.vol-modal-close{
+  position:absolute;
+  top:8px;
+  left:12px;
+  border:none;
+  background:transparent;
+  color:#666;
+  font-size:26px;
+  cursor:pointer;
+}
+.vol-modal h3{
+  margin:4px 0;
+  color:#004a80;
+}
+.vol-modal p{
+  font-size:13px;
+  margin:4px 0;
+}
+.vol-modal-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  justify-content:center;
+  margin-top:10px;
+}
+.vol-modal-actions a{
+  min-width:120px;
+  text-align:center;
+}
+
+
+.gallery-sections{
+  margin-top:10px;
+}
+.gallery-video{
+  width:100%;
+  border-radius:14px;
+  max-height:260px;
+  background:#000;
+}
